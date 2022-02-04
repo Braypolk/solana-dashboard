@@ -3,8 +3,8 @@ There are many types of transactions and different places we need to take input 
 TODO: Need to find the link and pattern between the explorer view and json
 
 ### Pay Rent to Account
-[example](https://explorer.solana.com/tx/5mqdCxSetwkGMMdiz4ykBHYc5QRUE5PeqtqWLUzYeNTRQr8oTnFWZJAHVABBVjNKh78ou9zQsbbqASoHW5eH24po)
-
+[token account example](https://explorer.solana.com/tx/5mqdCxSetwkGMMdiz4ykBHYc5QRUE5PeqtqWLUzYeNTRQr8oTnFWZJAHVABBVjNKh78ou9zQsbbqASoHW5eH24po)
+[asset pool example](https://explorer.solana.com/tx/5MLmmgYXM8bsDUGouJipYdKJcxFnphSyLRCnBWNanqJtMKf6Xba9ikj3rYGP5BVoEbnyLuXaQNWfcUcQ4P5nWsAR)
 Paying rent happens when you you initialize a new account, things like:
 - getting a new token in your wallet
 - I think when you provide to new pools
@@ -40,3 +40,12 @@ I don't really know what's going on in this one, need to look into it more
 [emample](https://explorer.solana.com/tx/3dynXwSMNS87hFJMGb8GQGiYyK6vfcHaG66daZDWrvqwgayago5rjvgCgHBZRabhGkuizWwHhFRjmXQn7K2pyRkQ)
 
 I think this transaction is a staking transaction, might be another transaction that goes along with it for paying rent/deposit
+
+
+
+### SLP Single Asset Stake
+[stake asset](https://explorer.solana.com/tx/678rz9Nfkn25Z6uqqsNVmLb6G6P3o1TNQw3eGaLAeUkGwx9Cfb2bwJKVFS1Di13fn9VAsMDPgK3PwNvcoMeoYqwu)
+[harvest staking rewards](https://explorer.solana.com/tx/3TkpwizN3tpnEFmLezuzVgan71zirHTwX5Fh2KWrsLGkNmBpRAdoREZagTVpfFGSd8amVQ2Xe8uHMRDAERhn9Nix)
+
+
+TODO: Still need transactions for deposit/withdrawl to liquidity pool, farm, and single asset staking (ex: hubble)

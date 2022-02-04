@@ -1,5 +1,5 @@
 import logo from './logo.svg';
-import Transactions from './example transactions/all-transactions.json'
+import './import.js'
 import './App.css';
 
 import { useEffect, useState } from 'react';
