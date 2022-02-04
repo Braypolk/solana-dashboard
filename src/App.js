@@ -1,6 +1,5 @@
 import logo from './logo.svg';
-import Transactions from './test-transactions.json'
-import Details from './test-transaction-detail.json'
+import Transactions from './example transactions/all-transactions.json'
 import './App.css';
 
 import { useEffect, useState } from 'react';
@@ -40,9 +39,11 @@ const App = () => {
     console.log(transactionDetail)
   }
   
-  // useEffect(() => {
-    // getTransactionDetail(Transactions[0].signature)
-  // })
+  useEffect(() => {
+    // getTransactionDetail(Transactions[2].signature)
+    getTransactionDetail('3dynXwSMNS87hFJMGb8GQGiYyK6vfcHaG66daZDWrvqwgayago5rjvgCgHBZRabhGkuizWwHhFRjmXQn7K2pyRkQ')
+  })
+
   let post, pre, token
   // pre token owner balance
   Details.meta.preTokenBalances.forEach(b => {
@@ -94,7 +95,6 @@ const App = () => {
         {/* {Transactions.map(transaction => (
           <li key={transaction.signature}>{transaction.signature}</li>
         ))} */}
-        {/* {getTransactionDetail(Transactions[0].signature)} */}
       </header>
     </div>
   );
