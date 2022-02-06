@@ -18,7 +18,7 @@ Rent amount will come from the account input(s) section
 
 
 ## Swapping Tokens
-[example]()
+[example](https://explorer.solana.com/tx/5TxFWKLBBcB6tcUGfBA4ECVDn75FAfqoXtkKNzPXbBfoXw2wAjD4xta7tfQsB74jmrrJuUZjaH4at5c6xzr9KsQa)
 TODO: get regular swap example
 
 [multi-swap example](https://explorer.solana.com/tx/5g172JNKfBCGH7Nh6MegpYqy2E9h7ci9PxUCvVLx4Td5oVDpJnkyJN4JhANyWAVwphYnzC3hwMRK9xmbh92BHNQe)
@@ -47,8 +47,6 @@ I think this transaction is a staking transaction, might be another transaction 
 [deposit example](https://explorer.solana.com/tx/3dynXwSMNS87hFJMGb8GQGiYyK6vfcHaG66daZDWrvqwgayago5rjvgCgHBZRabhGkuizWwHhFRjmXQn7K2pyRkQ)
 
 TODO: [withdrawal example]()
-
-
 
 
 ## SLP Single Asset Stake
