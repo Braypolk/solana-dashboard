@@ -2,8 +2,9 @@ import logo from './logo.svg';
 import './import.js'
 import './App.css';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Connection, PublicKey, clusterApiUrl, GetProgramAccountsConfig, GetProgramAccountsFilter, MemcmpFilter, DataSizeFilter } from '@solana/web3.js';
+import Select, { InputActionMeta, ActionMeta, ValueType } from "react-select";
 
 // https://token-list.solana.com/solana.tokenlist.json list of lots of token names/pairs/symbols
 
@@ -14,56 +15,84 @@ const App = () => {
   const [ownerRaw, setOwnerRaw] = useState('');
   const [owner, setOwner] = useState();
   const [inputValue, setInputValue] = useState('2d9WL9hVev1ri7TMe4EYcP7CFgi47QsLX7u2JqRSPuyD');
-  const [ownedAccounts, setOwnedAccounts] = useState([]);
+  // const [ownedAccounts, setOwnedAccounts] = useState([]);
   const [transactions, setTransactions] = useState([]);
+  // const [tranAddrs, setTranAddrs] = useState([]);
 
   const onInputChange = (event) => {
     const { value } = event.target;
     setInputValue(value);
   };
+  
+  useEffect(() => {
+    const getDetails = async (o) => {
+      // constant representing the Public key that identifies the SPL token program
+      let filter = { "programId": new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA") }
+      
+      // get all token accounts owned by user account
+      let tokenAccounts = await connection.getTokenAccountsByOwner(o, filter);
+      let ownedAccounts = []
+      tokenAccounts.value.forEach(p => {
+        ownedAccounts.push(p.pubkey.toBase58());
+      })
+      return ownedAccounts
+    }
 
-  // this async might cause problems later
-  const getDetails = async (ownerPubkey) => {
-    // constant representing the Public key that identifies the SPL token program
-    let filter = {"programId": new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")} 
-    
-    // get all token accounts owned by user account
-    let tokenAccounts = await connection.getTokenAccountsByOwner(ownerPubkey, filter);
+    const getTransactions = async (o) => {
+      let limit = 5
+      let params = { 'limit': limit }
 
-    tokenAccounts.value.forEach(p => {
-      setOwnedAccounts(ownedAccounts => [...ownedAccounts, p.pubkey.toBase58()]);
-    })
-    let limit = 5
-    let transSig = ''
-    let params = { 'limit': limit }
-    let transactionAddrs = await connection.getSignaturesForAddress(ownerPubkey, params);
+      let transactionAddrs = await connection.getSignaturesForAddress(o, params);
 
-    let td = await Promise.all(transactionAddrs.map(async (t) => {
-      try {
-        let transactionDetail = await connection.getTransaction(t.signature);
-        setTransactions(transactions => [...transactions, transactionDetail])
-        return transactionDetail
-      } catch(err) {
-        throw err;
-      }
-    }))
+      // let transSig = ''
+      // while (account.length = limit) {
+      //   transSig = account.at(-1).signature
+      //   params = { 'before': transSig, 'limit': limit }
+      //   account = await connection.getSignaturesForAddress(ownerPubkey, params);
+      //   console.log(account);
+      // }
+      return transactionAddrs
+    }
 
+    const getTranDetails = async (ta, oa) => {
+      let td = await Promise.all(ta.map(async (t) => {
+        try {
+          const transactionDetail = await connection.getTransaction(t.signature);
+          const keys = transactionDetail.transaction.message.accountKeys
 
-    // while (account.length = limit) {
-    //   transSig = account.at(-1).signature
-    //   params = { 'before': transSig, 'limit': limit }
-    //   account = await connection.getSignaturesForAddress(ownerPubkey, params);
-    //   console.log(account);
-    // }
-  }
+          let k = []
+          keys.forEach((e) => {
+            k.push(e.toBase58())
+          });
+          const filteredArray = oa.filter(value => k.includes(value));
 
-  useEffect(()=> {
-    if(owner != null){
+          return filteredArray;
+        } catch (err) {
+          throw err;
+        }
+      }))
+    }
+
+    if (owner != null) {
+
+      let ta, oa
       getDetails(owner)
+        .then((ownedAccounts) => {
+          oa = ownedAccounts
+          return getTransactions(owner)
+
+        })
+        .then((transactionAddrs) => {
+          ta = transactionAddrs
+          const transactionDetail = getTranDetails(ta, oa)
+          
+        })
     }
   }, [owner])
 
-/* Easy way to get details of a transaction */
+
+
+  /* Easy way to get details of a transaction */
   // const getTransactionDetail = async (transaction) => {
   //   let transactionDetail = await connection.getTransaction(transaction);
   //   console.log(transactionDetail)
