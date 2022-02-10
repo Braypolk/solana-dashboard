@@ -1,6 +1,5 @@
 export default class Transaction {
     constructor(preBalances, postBalances, preTokenBalances, postTokenBalances, blockTime, accountKeys) {
-        this.accountKeys = accountKeys;
         this.preBalances = preBalances;
         this.postBalances = postBalances;
         this.preTokenBalances = preTokenBalances;
@@ -12,7 +11,21 @@ export default class Transaction {
     }
 }
 
-export const allTransactions = [
+export const pruneTransaction = (td) => {
+    const blockTime= td.blockTime
+
+    // sol balances
+    const postBalances= td.meta.postBalances
+    const preBalances= td.meta.preBalances
+
+    // spl token balances
+    const postTokenBalances= td.meta.postTokenBalances
+    const preTokenBalances= td.meta.preTokenBalances
+
+    return new Transaction(preBalances, postBalances, preTokenBalances, postTokenBalances, blockTime);
+  }
+
+export const ALLTRANSACTIONS = [
     {
         "accountKeys": [
             0,
