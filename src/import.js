@@ -17,3 +17,4 @@
 // export const poolRent = require('./example transactions/pool-rent.json');
 // export const tokenAccRent = require('./example transactions/token-account-rent.json');
 // export const tokenMulti = require('./example transactions/token-multiswap.json');
+export const swap = require("./example transactions/swap.json");

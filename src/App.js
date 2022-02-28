@@ -1,12 +1,13 @@
-import './import.js';
+import {swap} from './import.js';
 import './App.css';
 
 // ! allTransactions is temp and for quick development
-import {ALLTRANSACTIONS, pruneTransaction} from './Transaction';
+import { ALLTRANSACTIONS, pruneTransaction } from './Transaction';
 import TransactionTable from './TransactionTable'
 
 import { useEffect, useState } from 'react';
-import { Connection, PublicKey, clusterApiUrl} from '@solana/web3.js';
+import { Connection, PublicKey, clusterApiUrl, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { Icon } from './tokenInfo.js';
 
 // mainnet-beta, testnet, devnet
 let connection = new Connection(clusterApiUrl('mainnet-beta'), 'confirmed');
@@ -25,86 +26,87 @@ const App = () => {
 
   useEffect(() => {
     // for testing, delete line below and uncomment the rest for actually getting data
-    setAllTransactions(ALLTRANSACTIONS)
+    // setAllTransactions(ALLTRANSACTIONS)
 
-    // const getDetails = async (owner) => {
-    //   // constant representing the Public key that identifies the SPL token program
-    //   let filter = { "programId": new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA") }
+    const getDetails = async () => {
+      // constant representing the Public key that identifies the SPL token program
+      let filter = { "programId": new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA") }
 
-    //   // get all token accounts owned by user account
-    //   let tokenAccounts = await connection.getTokenAccountsByOwner(owner, filter);
-    //   let ownedAccounts = [];
+      // get all token accounts owned by user account
+      let tokenAccounts = await connection.getTokenAccountsByOwner(owner, filter);
+      let ownedAccounts = [];
 
-    //   ownedAccounts.push(owner.toBase58());
-    //   tokenAccounts.value.forEach(p => {
-    //     ownedAccounts.push(p.pubkey.toBase58());
-    //   })
-    //   return ownedAccounts
-    // }
+      ownedAccounts.push(owner.toBase58());
+      tokenAccounts.value.forEach(p => {
+        ownedAccounts.push(p.pubkey.toBase58());
+      })
+      return ownedAccounts
+    }
 
-    // const getTransactions = async (owner) => {
-    //   let limit = 5
-    //   let params = { 'limit': limit }
+    const getTransactions = async (owner) => {
+      let limit = 5
+      let params = { 'limit': limit }
 
-    //   let transactionAddrs = await connection.getSignaturesForAddress(owner, params);
+      let transactionAddrs = await connection.getSignaturesForAddress(owner, params);
 
-    //   // *** Uncomment to get alllllll transactoins ***
-    //   // let transSig = ''
-    //   // while (account.length = limit) {
-    //   //   transSig = account.at(-1).signature
-    //   //   params = { 'before': transSig, 'limit': limit }
-    //   //   account = await connection.getSignaturesForAddress(ownerPubkey, params);
-    //   //   console.log(account);
-    //   // }
+      // *** Uncomment to get alllllll transactoins ***
+      // let transSig = ''
+      // while (account.length = limit) {
+      //   transSig = account.at(-1).signature
+      //   params = { 'before': transSig, 'limit': limit }
+      //   account = await connection.getSignaturesForAddress(ownerPubkey, params);
+      //   console.log(account);
+      // }
 
-    //   return transactionAddrs
-    // }
+      return transactionAddrs
+    }
 
-    // const getTranDetails = async (transactionAddrs, ownedAccounts) => {
-    //   let allTransactions = await Promise.all(transactionAddrs.map(async (t) => {
-    //     try {
-    //       const transactionDetail = await connection.getTransaction(t.signature);
+    const getTranDetails = async (transactionAddrs, ownedAccounts) => {
+      let allTransactions = await Promise.all(transactionAddrs.map(async (t) => {
+        try {
+          const transactionDetail = await connection.getTransaction(t.signature);
 
-    //       let prunedTransaction = pruneTransaction(transactionDetail)
+          let prunedTransaction = pruneTransaction(transactionDetail)
+          prunedTransaction.owner = owner
 
-    //       const keys = transactionDetail.transaction.message.accountKeys
+          const keys = transactionDetail.transaction.message.accountKeys
 
-    //       // get the position in keys array of matching addresses in oa
-    //       prunedTransaction.accountKeys = []
+          // get the position in keys array of matching addresses in oa
+          prunedTransaction.accountKeys = []
 
-    //       // todo: this slow make better hashtable or something
-    //       keys.forEach((k, i) => {
-    //         let key = k.toBase58()
+          // todo: this slow make better hashtable or something
+          keys.forEach((k, i) => {
+            let key = k.toBase58()
 
-    //         for (let x = 0; x < ownedAccounts.length; x++) {
-    //           if (key == ownedAccounts[x]) {
-    //             prunedTransaction.accountKeys.push(i) //might need to just push encoded key (k)
-    //             break;
-    //           }
-    //         }
-    //       });
+            for (let x = 0; x < ownedAccounts.length; x++) {
+              if (key == ownedAccounts[x]) {
+                prunedTransaction.accountKeys.push(i) //might need to just push encoded key (k)
+                break;
+              }
+            }
+          });
+          return prunedTransaction
+        } catch (err) {
+          throw err;
+        }
+      }))
+      setAllTransactions(allTransactions)
+    }
 
-    //       return prunedTransaction
-    //     } catch (err) {
-    //       throw err;
-    //     }
-    //   }))
-    //   setAllTransactions(allTransactions)
-    // }
+    if (owner != undefined) {
+      console.log("stuff");
+      let transactionAddrs, ownedAccounts
+      getDetails()
+        .then((oa) => {
+          ownedAccounts = oa
+          return getTransactions(owner)
 
-    // if (owner != null) {
-    //   let transactionAddrs, ownedAccounts
-    //   getDetails(owner)
-    //     .then((oa) => {
-    //       ownedAccounts = oa
-    //       return getTransactions(owner)
-
-    //     })
-    //     .then((ta) => {
-    //       transactionAddrs = ta
-    //       getTranDetails(transactionAddrs, ownedAccounts)
-    //     })
-    // }
+        })
+        .then((ta) => {
+          transactionAddrs = ta
+          getTranDetails(transactionAddrs, ownedAccounts)
+        })
+    }
   }, [owner])
 
   return (
@@ -122,8 +124,8 @@ const App = () => {
           <input type="submit" />
         </form>
       </header>
-
       <TransactionTable allTransactions={allTransactions}></TransactionTable>
+      {/* <Icon mint={'inL8PMVd6iiW3RCBJnr5AsrRN6nqr4BTrcNuQWQSkvY'}/> */}
     </div>
   );
 }

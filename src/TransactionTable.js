@@ -1,18 +1,21 @@
 import calcDiff from './calculateDiff';
 
 const TransactionTable = ({allTransactions}) => {
+    console.log(allTransactions);
     const allDiffs = () => {
-        let all = []
-        allTransactions.map(t => {
-            all.push(calcDiff(t, allTransactions.accountKeys))
+        let all = allTransactions.map(t => {
+            return calcDiff(t, allTransactions.accountKeys)
         })
+        console.log(all);
         return (
             <>
                 {
-                    all.map((d, i) => (
+                    all.map((r, i) => {
                         // just a test to see if this works
-                        <li key={i}>{d[0]}</li>
-                    ))
+                        return r.map((d, i) => {
+                            return d !== undefined ? <li key={i}>{d.amount}</li> : <></>
+                        })
+                    })
                 }
             </>
         )
