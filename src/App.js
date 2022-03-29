@@ -125,7 +125,6 @@ const App = () => {
         </form>
       </header>
       <TransactionTable allTransactions={allTransactions}></TransactionTable>
-      {/* <Icon mint={'inL8PMVd6iiW3RCBJnr5AsrRN6nqr4BTrcNuQWQSkvY'}/> */}
     </div>
   );
 }

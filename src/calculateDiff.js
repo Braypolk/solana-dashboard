@@ -8,6 +8,7 @@ const calcDiff = (transaction, accountKeys) => {
             balance["transactionPosition"] = i
             balance["accountIndex"] = item.accountIndex
             balance["amount"] = item.uiTokenAmount.uiAmount - transaction.preTokenBalances[i].uiTokenAmount.uiAmount
+            balance["mint"] = item.mint
         }
         return balance
     })
